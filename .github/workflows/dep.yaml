@@ -1,0 +1,25 @@
+name: "Deployment Workflow"
+on: 
+    push:
+        branches:
+            - master
+jobs:
+    simple_deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - name: "Checkout repo"
+          uses: actions/checkout@v2
+
+        - name: "Build the image"
+          run: |
+            docker build -t bejam/books-app:1 .
+                      
+        - name: "Login to DockerHub"
+          uses: docker/Login-action@v1
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+        - name: "push image to DockerHub"
+          run: |
+            docker push bejam/books-app:1  
